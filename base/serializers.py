@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+#InventoryItemSerializer
+from rest_framework import serializers
+from .models import InventoryItem
+
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -15,3 +20,10 @@ class RegisterSerializer(serializers.ModelSerializer):
                 password=validated_data['password']
             )
             return user
+
+
+class InventoryItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InventoryItem
+        fields = '__all__'
+        read_only_fields = ['user', 'date_added', 'last_updated']
