@@ -16,8 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from base.views import RegisterView, InventoryItemViewSet
+
+router = DefaultRouter()
+router.register(r'inventory', InventoryItemViewSet, basename='inventory')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/auth/register/', RegisterView.as_view(), name='register'),
     path('api/auth/', include('base.urls')),
+    path('api/', include(router.urls)),
 ]

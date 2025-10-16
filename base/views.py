@@ -5,9 +5,10 @@ from rest_framework import status
 from .serializers import RegisterSerializer
 
 #InventoryItemViewSet
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, filters
 from .models import InventoryItem
 from .serializers import InventoryItemSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # Create your views here. 
@@ -32,6 +33,12 @@ class RegisterView(generics.CreateAPIView):
 class InventoryItemViewSet(viewsets.ModelViewSet):
     serializer_class = InventoryItemSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    #For filter, search and ordering features
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['category']
+    search_fields = ['name', 'description']
+    ordering_fields = ['price', 'quantity', 'date_added']
 
     def get_queryset(self):
         # Each user sees only their own items
