@@ -6,8 +6,8 @@ from .serializers import RegisterSerializer
 
 #InventoryItemViewSet
 from rest_framework import viewsets, permissions, filters
-from .models import InventoryItem
-from .serializers import InventoryItemSerializer
+from .models import InventoryItem, InventoryChange
+from .serializers import InventoryItemSerializer, InventoryChangeSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -47,3 +47,25 @@ class InventoryItemViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Automatically assign the logged-in user
         serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        item = self.get_object()
+        old_quantity = item.quantity
+        updated_item = serializer.save()
+
+        #If the quantity did change it must be logged
+        if old_quantity != updated_item.quantity:
+            InventoryChange.objects.create(
+                item=updated_item,
+                user=self.request.user,
+                old_quantity=old_quantity,
+                new_quantity=updated_item.quantity
+            )
+
+class InventoryChangeViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = InventoryChangeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        #Only show changes related to the logged-in user's items
+        return InventoryChange.objects.filter(user=self.request.user).order_by('-change_date')

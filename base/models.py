@@ -14,3 +14,13 @@ class InventoryItem(models.Model):
 
     def __str__(self):
         return self.name
+
+class InventoryChange(models.Model):
+    item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='changes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    old_quantity = models.PositiveBigIntegerField()
+    new_quantity = models.PositiveBigIntegerField()
+    change_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.item.name}: {self.old_quantity} → {self.new_quantity}"
