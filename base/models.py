@@ -18,8 +18,8 @@ class InventoryItem(models.Model):
 class InventoryChange(models.Model):
     item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='changes')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    old_quantity = models.PositiveBigIntegerField()
-    new_quantity = models.PositiveBigIntegerField()
+    old_quantity = models.IntegerField()
+    new_quantity = models.IntegerField()
     change_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

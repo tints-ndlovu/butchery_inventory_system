@@ -10,8 +10,15 @@ from .models import InventoryItem, InventoryChange
 from .serializers import InventoryItemSerializer, InventoryChangeSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
+from rest_framework.pagination import PageNumberPagination
 
-# Create your views here. 
+#Pagination setup
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+
+# Create your views here.
+# Registers new users 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
@@ -29,7 +36,7 @@ class RegisterView(generics.CreateAPIView):
         user = User.objects.create_user(username=username, email=email, password=password)
         return Response({'message': 'New User created successfully', 'user': user.username}, status=status.HTTP_201_CREATED)
     
-
+#CRUD for invetory items
 class InventoryItemViewSet(viewsets.ModelViewSet):
     serializer_class = InventoryItemSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -62,6 +69,7 @@ class InventoryItemViewSet(viewsets.ModelViewSet):
                 new_quantity=updated_item.quantity
             )
 
+#Change history is view only
 class InventoryChangeViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = InventoryChangeSerializer
     permission_classes = [permissions.IsAuthenticated]
