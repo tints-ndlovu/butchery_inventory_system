@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Butchery Inventory System</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Butchery Inventory System</h1>
+        <p>Welcome! Use the buttons below to navigate through the system.</p>
+
+        <div class="button-container">
+            <button onclick="location.href='/api/token/'">Login</button>
+            <button onclick="location.href='/api/auth/register/'">Register User</button>
+            <button onclick="location.href='/api/inventory/'">Inventory</button>
+            <button onclick="location.href='/api/add-inventory/'">Add Inventory</button>
+            <button onclick="location.href='/api/changes/'">Change History</button>
+            
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from base.views import RegisterView, InventoryItemViewSet, InventoryChangeViewSet
+from django.views.generic import TemplateView
 
 router = DefaultRouter()
 router.register(r'inventory', InventoryItemViewSet, basename='inventory')
@@ -25,7 +26,8 @@ router.register(r'changes', InventoryChangeViewSet, basename='changes')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('api/auth/register/', RegisterView.as_view(), name='register'),
-    path('api/auth/', include('base.urls')),
+    path('api/', include('base.urls')),
     path('api/', include(router.urls)),
 ]

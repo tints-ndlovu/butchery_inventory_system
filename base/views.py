@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -9,8 +10,14 @@ from rest_framework import viewsets, permissions, filters
 from .models import InventoryItem, InventoryChange
 from .serializers import InventoryItemSerializer, InventoryChangeSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 
 from rest_framework.pagination import PageNumberPagination
+
+#Frontend
+def frontend(request):
+    return render(request, 'index.html')
 
 #Pagination setup
 class StandardResultsSetPagination(PageNumberPagination):
@@ -20,8 +27,9 @@ class StandardResultsSetPagination(PageNumberPagination):
 # Create your views here.
 # Registers new users 
 class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
     serializer_class = RegisterSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         username = request.data.get('username')
@@ -39,7 +47,8 @@ class RegisterView(generics.CreateAPIView):
 #CRUD for invetory items
 class InventoryItemViewSet(viewsets.ModelViewSet):
     serializer_class = InventoryItemSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]    #Authentication
+    pagination_class = StandardResultsSetPagination  #Pagination
 
     #For filter, search and ordering features
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
